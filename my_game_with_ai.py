@@ -2,6 +2,7 @@ import os
 import time
 from random import randint, choice
 import numpy as np
+from art import tprint
 
 
 def clear():
@@ -88,6 +89,7 @@ def update_field():
     field[pit_x][pit_y] = "@"
     field[pit_two_x][pit_two_y] = "@"
     field[min_pit_x][min_pit_y] = "&"
+    tprint("MY-GAME-WITH-AI")
 
 
 episodes = 1000
