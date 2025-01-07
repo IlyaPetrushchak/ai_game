@@ -2,6 +2,7 @@ import os
 import time
 from random import randint, choice
 import numpy as np
+import matplotlib.pyplot as plt  # Importing matplotlib for plotting
 from art import tprint
 
 
@@ -16,9 +17,10 @@ q_table = np.zeros((size, size, len(actions)))
 
 alpha = 0.1
 gamma = 0.9
-epsilon = 0.3
+epsilon = 0.15
 
 treasure_sum = 0
+steps_per_episode = []  # List to store steps taken in each episode
 
 
 def reset_game():
@@ -34,8 +36,8 @@ def reset_game():
         min_pit_x, \
         min_pit_y, \
         field
-    field = [["#" for _ in range(size)] for _ in range(size)]
-    treasure_x, treasure_y = randint(0, size - 1), randint(0, size - 1)
+    field = [["." for _ in range(size)] for _ in range(size)]
+    treasure_x, treasure_y = 7,7 #randint(0, size - 1), randint(0, size - 1)
     player_x, player_y = 4, 4
     pit_x, pit_y = 4, 3
     pit_two_x, pit_two_y = 7, 5
@@ -55,7 +57,7 @@ def print_field():
 def regenerate_treasure():
     global treasure_x, treasure_y
     while True:
-        new_x, new_y = randint(0, size - 1), randint(0, size - 1)
+        new_x, new_y = 7,7 #randint(0, size - 1), randint(0, size - 1)
         if (new_x, new_y) != (player_x, player_y):
             treasure_x, treasure_y = new_x, new_y
             field[treasure_x][treasure_y] = "$"
@@ -83,16 +85,20 @@ def take_action(action):
 
 def update_field():
     global field
-    field = [["#" for _ in range(size)] for _ in range(size)]
+    field = [["." for _ in range(size)] for _ in range(size)]
     field[player_x][player_y] = "X"
     field[treasure_x][treasure_y] = "$"
     field[pit_x][pit_y] = "@"
     field[pit_two_x][pit_two_y] = "@"
     field[min_pit_x][min_pit_y] = "&"
     tprint("MY-GAME-WITH-AI")
+    print("episode #: " + str(episode))
+    print("steps: " + str(steps))
+    print("treasure sum: " + str(treasure_sum))
 
 
-episodes = 1000
+episodes = 150
+steps = 0
 
 for episode in range(episodes):
     reset_game()
@@ -110,7 +116,8 @@ for episode in range(episodes):
 
         if (player_x, player_y) == (treasure_x, treasure_y):
             reward = 10
-            regenerate_treasure()
+            print("Found treasure! $$$")
+            #regenerate_treasure()
             treasure_sum += 1
         else:
             reward = -1
@@ -131,10 +138,19 @@ for episode in range(episodes):
         )
 
         steps += 1
-        time.sleep(0.2)
+        time.sleep(0.001)
 
-        if steps > 50 or treasure_sum == 10:
+        if steps > 50 or treasure_sum == 1:
             break
 
+    steps_per_episode.append(steps)  # Store the number of steps for this episode
     treasure_sum = 0
     time.sleep(1)
+
+# Plotting the learning curve
+plt.plot(range(episodes), steps_per_episode)
+plt.xlabel('Episodes')
+plt.ylabel('Steps to Goal')
+plt.title('Learning Curve of RL Agent')
+plt.grid()
+plt.show()
