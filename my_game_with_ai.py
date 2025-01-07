@@ -37,7 +37,7 @@ def reset_game():
         min_pit_y, \
         field
     field = [["." for _ in range(size)] for _ in range(size)]
-    treasure_x, treasure_y = 7,7#randint(0, size - 1), randint(0, size - 1)
+    treasure_x, treasure_y = 7,7 #randint(0, size - 1), randint(0, size - 1)
     player_x, player_y = 4, 4
     pit_x, pit_y = 4, 3
     pit_two_x, pit_two_y = 7, 5
@@ -57,7 +57,7 @@ def print_field():
 def regenerate_treasure():
     global treasure_x, treasure_y
     while True:
-        new_x, new_y = 7,7#randint(0, size - 1), randint(0, size - 1)
+        new_x, new_y = 7,7 #randint(0, size - 1), randint(0, size - 1)
         if (new_x, new_y) != (player_x, player_y):
             treasure_x, treasure_y = new_x, new_y
             field[treasure_x][treasure_y] = "$"
